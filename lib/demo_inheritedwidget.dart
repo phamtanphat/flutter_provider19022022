@@ -34,6 +34,10 @@ class Ongba extends StatefulWidget {
 
   String data = "Hello";
 
+  static Ongba? of(BuildContext context){
+    return context.findAncestorWidgetOfExactType();
+  }
+
   @override
   State<Ongba> createState() => _OngbaState();
 }
@@ -81,13 +85,13 @@ class Chame extends StatelessWidget {
 class Concai extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Ongba? ongba = context.findAncestorWidgetOfExactType();
+    Ongba? ongba = Ongba.of(context);
     return Container(
       child:Column(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Con cai widget : ${ongba?.data}",
+          Text("Con cai widget ${ongba?.data}",
               style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
         ],
       ),
