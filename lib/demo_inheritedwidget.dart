@@ -16,7 +16,11 @@ class _DemoInheritedWidgetState extends State<DemoInheritedWidget> {
       ),
       body: Container(
         constraints: BoxConstraints.expand(),
-        child: Ongba(),
+        child: Ongba(
+          child: Chame(
+            child: Concai(),
+          ),
+        ),
       ),
     );
   }
@@ -24,6 +28,10 @@ class _DemoInheritedWidgetState extends State<DemoInheritedWidget> {
 
 //Ong ba : state full
 class Ongba extends StatefulWidget {
+  Widget child;
+
+  Ongba({required this.child});
+
   String data = "Hello";
 
   @override
@@ -39,7 +47,8 @@ class _OngbaState extends State<Ongba> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text("Ong ba widget",
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold))
+              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+          widget.child
         ],
       ),
     );
@@ -48,11 +57,23 @@ class _OngbaState extends State<Ongba> {
 
 // Cha me : stateless
 class Chame extends StatelessWidget {
-  const Chame({Key? key}) : super(key: key);
+  Widget child;
+
+  Chame({required this.child});
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text("Cha me widget",
+              style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
+          child
+        ],
+      ),
+    );
   }
 }
 
@@ -60,6 +81,15 @@ class Chame extends StatelessWidget {
 class Concai extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+      child:Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text("Con cai widget",
+              style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
   }
 }
