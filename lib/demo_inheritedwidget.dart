@@ -81,12 +81,13 @@ class Chame extends StatelessWidget {
 class Concai extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Ongba? ongba = context.findAncestorWidgetOfExactType();
     return Container(
       child:Column(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Con cai widget",
+          Text("Con cai widget : ${ongba?.data}",
               style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
         ],
       ),
