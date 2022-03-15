@@ -49,6 +49,7 @@ class _OngbaState extends State<Ongba> {
 
   @override
   Widget build(BuildContext context) {
+    print("Ong ba build");
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -66,11 +67,31 @@ class _OngbaState extends State<Ongba> {
               },
               child: Text("Random number")
           ),
-          widget.child
+          MyInheritedWidget(
+              child: widget.child,
+              value: widget.data
+          )
         ],
       ),
     );
   }
+}
+
+class MyInheritedWidget extends InheritedWidget{
+  Widget child;
+  late String value;
+
+  MyInheritedWidget({required this.child , required this.value}) : super(child: child);
+
+  static MyInheritedWidget? of(BuildContext context){
+    return context.dependOnInheritedWidgetOfExactType();
+  }
+
+  @override
+  bool updateShouldNotify(covariant MyInheritedWidget oldWidget) {
+    return oldWidget.value != value;
+  }
+
 }
 
 // Cha me : stateless
@@ -81,6 +102,7 @@ class Chame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("Cha me build");
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -99,13 +121,14 @@ class Chame extends StatelessWidget {
 class Concai extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Ongba? ongba = Ongba.of(context);
+  print("Con cai build");
+  MyInheritedWidget? myInheritedWidget = MyInheritedWidget.of(context);
     return Container(
       child:Column(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Con cai widget ${ongba?.data}",
+          Text("Con cai widget ${myInheritedWidget?.value}",
               style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
         ],
       ),
