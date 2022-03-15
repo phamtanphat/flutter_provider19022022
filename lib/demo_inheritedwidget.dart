@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -43,6 +45,8 @@ class Ongba extends StatefulWidget {
 }
 
 class _OngbaState extends State<Ongba> {
+  int number = 0;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -52,6 +56,16 @@ class _OngbaState extends State<Ongba> {
         children: [
           Text("Ong ba widget",
               style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+          Text("Number : $number",
+              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+          ElevatedButton(
+              onPressed: (){
+                setState(() {
+                  number = Random.secure().nextInt(10);
+                });
+              },
+              child: Text("Random number")
+          ),
           widget.child
         ],
       ),
