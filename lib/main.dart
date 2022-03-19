@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_provider19022022/demo_inheritedWidget_2.dart';
+import 'package:flutter_provider19022022/demo_provider_basic.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: DemoInheritedWidget2(),
+      home: DemoBasicProvider(),
     );
   }
 }
