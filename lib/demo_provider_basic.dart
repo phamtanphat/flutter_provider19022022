@@ -1,6 +1,5 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 class DemoBasicProvider extends StatefulWidget {
   const DemoBasicProvider({Key? key}) : super(key: key);
 
@@ -10,70 +9,94 @@ class DemoBasicProvider extends StatefulWidget {
 
 class _DemoBasicProviderState extends State<DemoBasicProvider> {
 
-  List<Widget> listWidget = [
-    Padding(padding: EdgeInsets.all(5) , child: ColorWidget(key: GlobalKey(),)),
-    Padding(padding: EdgeInsets.all(5) , child: ColorWidget(key: GlobalKey(),)),
-  ];
-
-  void swapColor(){
-    setState(() {
-      listWidget.insert(1, listWidget.removeAt(0));
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Demo Key"),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          swapColor();
-        },
-        child: Icon(Icons.swap_horiz_outlined),
+        title: Text("Demo Basic Provider"),
       ),
       body: Container(
         constraints: BoxConstraints.expand(),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: listWidget
-        ),
+        child: Center(
+          child: OngBaWidget(
+            child: ChaMeWidget(
+              child: ConCaiWidget(),
+            ),
+          )
+        )
       ),
     );
   }
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-
-  }
 }
 
-class ColorWidget extends StatefulWidget {
 
-  ColorWidget({required Key key}) : super(key: key);
+class OngBaWidget extends StatefulWidget {
+  Widget child;
+
+  OngBaWidget({required this.child}) : super(key: UniqueKey());
 
   @override
-  _ColorWidgetState createState() => _ColorWidgetState();
+  State<OngBaWidget> createState() => _OngBaWidgetState();
 }
 
-class _ColorWidgetState extends State<ColorWidget> {
-  final Color color = Color.fromARGB(
-      255,
-      Random.secure().nextInt(255),
-      Random.secure().nextInt(255),
-      Random.secure().nextInt(255)
-  );
+class _OngBaWidgetState extends State<OngBaWidget> {
+  String text = "Hello";
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: color,
-      width: 100,
-      height: 100,
+      child: Column(
+        children: [
+          Text("Ong ba widget"),
+          Provider.value(
+              value: text,
+              child: widget.child,
+          )
+        ],
+      ),
     );
   }
 }
+
+class ChaMeWidget extends StatelessWidget {
+
+  Widget child;
+
+  ChaMeWidget({required this.child}) : super(key: UniqueKey());
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        children: [
+          Text("Cha me widget"),
+          child
+        ],
+      ),
+    );
+  }
+}
+
+class ConCaiWidget extends StatelessWidget {
+
+  ConCaiWidget() : super(key: UniqueKey());
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<String>(
+        builder: (context , text , child){
+          return Container(
+            child: Column(
+              children: [
+                Text("Con cai widget"),
+                Text("Data from parent : $text")
+              ],
+            ),
+          );
+        }
+    );
+  }
+}
+
+
 

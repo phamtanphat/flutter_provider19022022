@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_provider19022022/demo_changenotifier_provider.dart';
 import 'package:flutter_provider19022022/demo_inheritedWidget_2.dart';
 import 'package:flutter_provider19022022/demo_provider_basic.dart';
 
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: DemoBasicProvider(),
+      home: DemoChangeNotifierWidget(),
     );
   }
 }
