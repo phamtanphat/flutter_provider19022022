@@ -10,11 +10,23 @@ class Count extends ChangeNotifier{
   }
 }
 
+class TextData extends ChangeNotifier{
+  late String data;
+
+  TextData({required this.data});
+
+  void changeText(String text){
+    data = text;
+    notifyListeners();
+  }
+}
+
 class DemoChangeNotifierWidget extends StatelessWidget {
 
   DemoChangeNotifierWidget() : super(key: UniqueKey());
 
   Count count = Count(value: 0);
+  TextData textData = TextData(data: "Hello");
 
   @override
   Widget build(BuildContext context) {
@@ -22,18 +34,21 @@ class DemoChangeNotifierWidget extends StatelessWidget {
       appBar: AppBar(
         title: Text("Demo ChangeNotifier Provider"),
       ),
-      body: ChangeNotifierProvider.value(
-        value: count,
-        child: Consumer<Count>(
-          builder: (context, data , child){
+      body: MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: count),
+          ChangeNotifierProvider.value(value: textData),
+        ],
+        child: Consumer<TextData>(
+          builder: (context, text , child){
             return Container(
                 constraints: BoxConstraints.expand(),
                 child: Column(
                   children: [
-                    Text("Value : ${data.value}"),
+                    Text(text.data),
                     ElevatedButton(
                         onPressed: (){
-                          data.inCrease();
+                          // data.inCrease();
                         },
                         child: Text("+"))
                   ],
@@ -41,7 +56,7 @@ class DemoChangeNotifierWidget extends StatelessWidget {
             );
           },
         )
-      ),
+      )
     );
   }
 }
