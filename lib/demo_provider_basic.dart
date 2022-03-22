@@ -9,7 +9,11 @@ class DemoBasicProvider extends StatefulWidget {
 }
 
 class _DemoBasicProviderState extends State<DemoBasicProvider> {
-  List<Widget> listWidget = [ColorWidget(key: Key("1"),),ColorWidget(key: Key("2"),)];
+
+  List<Widget> listWidget = [
+    Padding(padding: EdgeInsets.all(5) , child: ColorWidget(key: GlobalKey(),)),
+    Padding(padding: EdgeInsets.all(5) , child: ColorWidget(key: GlobalKey(),)),
+  ];
 
   void swapColor(){
     setState(() {
@@ -38,6 +42,12 @@ class _DemoBasicProviderState extends State<DemoBasicProvider> {
         ),
       ),
     );
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+
   }
 }
 
