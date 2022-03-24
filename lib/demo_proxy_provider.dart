@@ -1,14 +1,15 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ApiService {
-  Future<String> callApi() {
+  String callApi() {
     var random = Random();
     if (random.nextBool()) {
-      return Future.value("Call api success");
+      return "Call api success";
     } else {
-      return Future.error("Fail exception");
+      return "Fail exception";
     }
   }
 }
@@ -69,10 +70,12 @@ class DemoProxyProvider extends StatelessWidget {
 }
 
 class DemoProxyContainer extends StatelessWidget {
-  const DemoProxyContainer({Key? key}) : super(key: key);
+  StreamController<String> data = StreamController();
 
   @override
   Widget build(BuildContext context) {
+    DemoController controller = Provider.of(context);
+    data.sink.add(controller.repository.apiService.callApi());
     return Consumer<DemoController>(
       builder: (context , controller , child){
         return Container(
@@ -81,8 +84,8 @@ class DemoProxyContainer extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              FutureBuilder<String>(
-                  future: controller.repository.apiService.callApi(),
+              StreamBuilder<String>(
+                  stream: data.stream,
                   initialData: "",
                   builder: (context , snapshot){
                     if(snapshot.hasError){
@@ -93,6 +96,12 @@ class DemoProxyContainer extends StatelessWidget {
                     }
                     return SizedBox();
                   }
+              ),
+              ElevatedButton(
+                  onPressed: (){
+                    data.sink.add(controller.repository.apiService.callApi());
+                  },
+                  child: Text("Call Api")
               )
             ],
           ),
