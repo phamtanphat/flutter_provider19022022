@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_provider19022022/weather_app/dio_client.dart';
 
 class WeatherScreen extends StatefulWidget {
   const WeatherScreen({Key? key}) : super(key: key);
@@ -8,6 +9,14 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    DioClient client = DioClient.createByGender(gender: Gender.FEMALE);
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

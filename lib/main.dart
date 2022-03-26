@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_provider19022022/demo_changenotifier_provider.dart';
-import 'package:flutter_provider19022022/demo_inheritedWidget_2.dart';
-import 'package:flutter_provider19022022/demo_provider_basic.dart';
-import 'package:flutter_provider19022022/demo_proxy_provider.dart';
-import 'package:flutter_provider19022022/weather_screen.dart';
+import 'package:flutter_provider19022022/weather_app/weather_screen.dart';
 
 void main() {
   runApp(MyApp());
