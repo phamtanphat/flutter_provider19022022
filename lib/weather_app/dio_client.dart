@@ -24,3 +24,5 @@ class DioClient{
     return _dio;
   }
 }
+
+

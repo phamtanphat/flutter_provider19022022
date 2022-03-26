@@ -15,15 +15,25 @@ class _WeatherScreenState extends State<WeatherScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    DioClient dio1 = DioClient.getInstance();
-    DioClient dio2 = DioClient.getInstance();
-
-    print(dio1 == dio2);
+    // DioClient dio1 = DioClient.getInstance();
+    // DioClient dio2 = DioClient.getInstance();
+    //
+    // print(dio1 == dio2);
 
     // Object o1 = Object();
     // Object o2 = Object();
     //
     // print(o1 == o2);
+
+    //json object
+    // Map objecta = {
+    //   "name" : "Nguyen Van Teo"
+    // };
+    //
+    // //Json array
+    // var arr = [
+    //   "Teo","Ty","Tun"
+    // ];
 
 
   }
