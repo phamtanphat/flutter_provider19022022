@@ -1,28 +1,26 @@
+import 'package:dio/dio.dart';
+
 class DioClient{
-  late String gender;
 
-  DioClient();
+  static DioClient _dioClient = DioClient._internal();
+  late Dio _dio;
 
-  DioClient.female(){
-    gender = "Female";
-    print(gender);
+  DioClient._internal(){
+    _dio = Dio(BaseOptions(
+      baseUrl: "http://api.openweathermap.org/",
+      connectTimeout: 10000,
+      receiveTimeout: 10000,
+      sendTimeout: 10000,
+    ));
+    _dio.interceptors.add(LogInterceptor());
+
   }
 
-  DioClient.male(){
-    gender = "Male";
-    print(gender);
+  factory DioClient.getInstance(){
+    return _dioClient;
   }
 
-  factory DioClient.createByGender({required Gender gender}){
-    if(gender == Gender.MALE){
-      return DioClient.male();
-    }else{
-      return DioClient.female();
-    }
+  Dio get(){
+    return _dio;
   }
-
-}
-
-enum Gender{
-  MALE , FEMALE
 }

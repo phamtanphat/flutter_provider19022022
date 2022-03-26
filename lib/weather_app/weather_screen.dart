@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_provider19022022/weather_app/dio_client.dart';
 
@@ -13,7 +14,17 @@ class _WeatherScreenState extends State<WeatherScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    DioClient client = DioClient.createByGender(gender: Gender.FEMALE);
+
+    DioClient dio1 = DioClient.getInstance();
+    DioClient dio2 = DioClient.getInstance();
+
+    print(dio1 == dio2);
+
+    // Object o1 = Object();
+    // Object o2 = Object();
+    //
+    // print(o1 == o2);
+
 
   }
 
