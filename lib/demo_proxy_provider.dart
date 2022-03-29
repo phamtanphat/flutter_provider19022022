@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ApiService {
+class ApiService1 {
   String callApi() {
     var random = Random();
     if (random.nextBool()) {
@@ -15,11 +15,11 @@ class ApiService {
 }
 
 class Repository {
-  late ApiService apiService;
+  late ApiService1 apiService;
 
   Repository();
 
-  void updateApiService({ApiService? apiService}) {
+  void updateApiService({ApiService1? apiService}) {
     this.apiService = apiService!;
   }
 
@@ -50,8 +50,8 @@ class DemoProxyProvider extends StatelessWidget {
           title: Text("Demo Proxy"),
         ),
         body: MultiProvider(providers: [
-          Provider(create: (context) => ApiService()),
-          ProxyProvider<ApiService, Repository>(
+          Provider(create: (context) => ApiService1()),
+          ProxyProvider<ApiService1, Repository>(
             create: (context) => Repository(),
             update: (context, apiService, repository) {
               repository!.updateApiService(apiService: apiService);

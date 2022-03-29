@@ -3,7 +3,6 @@ import 'package:flutter_provider19022022/weather_app/models/sys.dart';
 import 'package:flutter_provider19022022/weather_app/models/weather.dart';
 import 'package:flutter_provider19022022/weather_app/models/wind.dart';
 
-
 class WeatherResponse {
   List<Weather>? weather;
   Main? main;
