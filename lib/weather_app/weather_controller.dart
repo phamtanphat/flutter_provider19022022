@@ -17,9 +17,14 @@ class WeatherController {
   void getTempCity(String cityName) async {
     try {
       Response response = await _repository.getTempCity(cityName);
-      print(response);
-    } catch (e) {
-      print(e.toString());
+      if(response.statusCode == 200){
+        WeatherResponse weatherResponse = WeatherResponse.fromJson(response.data);
+        responseController.sink.add(weatherResponse);
+      }
+    } on DioError catch(dioError){
+      responseController.sink.addError(dioError.response?.data["message"]);
+    }catch (e){
+      responseController.sink.addError(e.toString());
     }
   }
 

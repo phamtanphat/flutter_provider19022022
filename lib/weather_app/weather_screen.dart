@@ -68,7 +68,7 @@ class _WeatherScreenContainerState extends State<WeatherScreenContainer> {
     height = MediaQuery.of(context).size.height;
     controller = Provider.of(context);
 
-    controller.getTempCity("Hanoi");
+    controller.getTempCity("Hanoiwqewqeqwewqewqe");
   }
 
   @override
