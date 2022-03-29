@@ -1,6 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_provider19022022/weather_app/api_service.dart';
 import 'package:flutter_provider19022022/weather_app/dio_client.dart';
+import 'package:flutter_provider19022022/weather_app/weather_controller.dart';
+import 'package:flutter_provider19022022/weather_app/weather_repository.dart';
+import 'package:provider/provider.dart';
 
 class WeatherScreen extends StatefulWidget {
   const WeatherScreen({Key? key}) : super(key: key);
@@ -15,36 +19,34 @@ class _WeatherScreenState extends State<WeatherScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // DioClient dio1 = DioClient.getInstance();
-    // DioClient dio2 = DioClient.getInstance();
-    //
-    // print(dio1 == dio2);
-
-    // Object o1 = Object();
-    // Object o2 = Object();
-    //
-    // print(o1 == o2);
-
-    //json object
-    // Map objecta = {
-    //   "name" : "Nguyen Van Teo"
-    // };
-    //
-    // //Json array
-    // var arr = [
-    //   "Teo","Ty","Tun"
-    // ];
-
-
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text("Weather Screen"),
+    return MultiProvider(
+      providers: [
+        Provider(create: (context) => ApiService()),
+        ProxyProvider<ApiService,WeatherRepository>(
+          create: (context) => WeatherRepository(),
+          update: (context , apiService , repository){
+            repository!.updateApiService(apiService: apiService);
+            return repository;
+          },
         ),
-        body: WeatherScreenContainer());
+        ProxyProvider<WeatherRepository,WeatherController>(
+          create: (context) => WeatherController(),
+          update: (context , repository , controller){
+            controller!.updateRepository(repository: repository);
+            return controller;
+          },
+        )
+      ],
+      child: Scaffold(
+          appBar: AppBar(
+            title: Text("Weather Screen"),
+          ),
+          body: WeatherScreenContainer()),
+    );
   }
 }
 
@@ -57,12 +59,16 @@ class WeatherScreenContainer extends StatefulWidget {
 
 class _WeatherScreenContainerState extends State<WeatherScreenContainer> {
   late double width, height;
+  late WeatherController controller;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
+    controller = Provider.of(context);
+
+    controller.getTempCity("Hanoi");
   }
 
   @override
