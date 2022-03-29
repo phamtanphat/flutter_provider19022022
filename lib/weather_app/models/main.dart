@@ -1,7 +1,7 @@
 class Main {
-  int? temp;
-  int? pressure;
-  int? humidity;
+  num? temp;
+  num? pressure;
+  num? humidity;
 
   Main(
       {this.temp,

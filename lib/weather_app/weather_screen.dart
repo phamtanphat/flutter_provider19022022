@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_provider19022022/weather_app/api_service.dart';
 import 'package:flutter_provider19022022/weather_app/dio_client.dart';
+import 'package:flutter_provider19022022/weather_app/models/weather_reponse.dart';
 import 'package:flutter_provider19022022/weather_app/weather_controller.dart';
 import 'package:flutter_provider19022022/weather_app/weather_repository.dart';
 import 'package:provider/provider.dart';
@@ -14,11 +16,9 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
   }
 
   @override
@@ -26,16 +26,16 @@ class _WeatherScreenState extends State<WeatherScreen> {
     return MultiProvider(
       providers: [
         Provider(create: (context) => ApiService()),
-        ProxyProvider<ApiService,WeatherRepository>(
+        ProxyProvider<ApiService, WeatherRepository>(
           create: (context) => WeatherRepository(),
-          update: (context , apiService , repository){
+          update: (context, apiService, repository) {
             repository!.updateApiService(apiService: apiService);
             return repository;
           },
         ),
-        ProxyProvider<WeatherRepository,WeatherController>(
+        ProxyProvider<WeatherRepository, WeatherController>(
           create: (context) => WeatherController(),
-          update: (context , repository , controller){
+          update: (context, repository, controller) {
             controller!.updateRepository(repository: repository);
             return controller;
           },
@@ -60,6 +60,7 @@ class WeatherScreenContainer extends StatefulWidget {
 class _WeatherScreenContainerState extends State<WeatherScreenContainer> {
   late double width, height;
   late WeatherController controller;
+  late TextEditingController _searchController = TextEditingController();
 
   @override
   void didChangeDependencies() {
@@ -68,7 +69,9 @@ class _WeatherScreenContainerState extends State<WeatherScreenContainer> {
     height = MediaQuery.of(context).size.height;
     controller = Provider.of(context);
 
-    controller.getTempCity("Hanoiwqewqeqwewqewqe");
+    Future.delayed(Duration(seconds: 2), () {
+      controller.getTempCity("Hanoi");
+    });
   }
 
   @override
@@ -86,60 +89,118 @@ class _WeatherScreenContainerState extends State<WeatherScreenContainer> {
           )),
           constraints: BoxConstraints.expand(),
           padding: const EdgeInsets.all(5),
-          child: LayoutBuilder(builder: (context, constraint) {
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraint.maxHeight),
-                child: IntrinsicHeight(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        searchBox(),
-                        Expanded(flex: 5, child: tempCity()),
-                        Expanded(flex: 2, child: detailTemp())
-                      ]),
-                ),
-              ),
-            );
-          })),
+          child: Consumer<WeatherController>(
+            builder: (context, controller, child) {
+              return LayoutBuilder(builder: (context, constraint) {
+                return SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints:
+                        BoxConstraints(minHeight: constraint.maxHeight),
+                    child: IntrinsicHeight(
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            searchBox(),
+                            StreamBuilder<WeatherResponse>(
+                              initialData: null,
+                              stream: controller.responseController.stream,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasError) {
+                                  return Container(
+                                    constraints: BoxConstraints(
+                                        minHeight: constraint.maxHeight),
+                                    child: Center(
+                                      child: Text(snapshot.error.toString(),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 30)),
+                                    ),
+                                  );
+                                }
+                                if (snapshot.hasData) {
+                                  return Expanded(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        Expanded(
+                                            flex: 5,
+                                            child: tempCity(snapshot.data)),
+                                        Expanded(
+                                            flex: 2,
+                                            child: detailTemp(snapshot.data))
+                                      ],
+                                    ),
+                                  );
+                                }
+                                return Expanded(
+                                    child: Center(
+                                        child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                )));
+                              },
+                            )
+                          ]),
+                    ),
+                  ),
+                );
+              });
+            },
+          )),
     );
   }
 
   Widget searchBox() {
     return TextField(
+      controller: _searchController,
       decoration: InputDecoration(
         fillColor: Colors.white,
         filled: true,
         border: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10))),
         hintText: "Input city name",
-        suffixIcon: IconButton(icon: Icon(Icons.search), onPressed: () {}),
+        suffixIcon: IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              String cityName = _searchController.text.toString();
+              if (cityName.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("City name is empty")));
+                return;
+              }
+              Future.delayed(Duration(seconds: 1), () {
+                controller.getTempCity(cityName);
+              });
+            }),
       ),
     );
   }
 
-  Widget tempCity() {
+  Widget tempCity(WeatherResponse? response) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text("20 \u00BA C",
-            style: TextStyle(color: Colors.yellow, fontSize: width / 4)),
-        Text("Hanoi,VN",
+        Text(
+          "${response?.main?.temp} \u00BA C",
+          style: TextStyle(color: Colors.yellow, fontSize: width / 6),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        Text("${response?.name},${response?.sys?.country}",
             style: TextStyle(color: Colors.white, fontSize: width / 10)),
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Image.network(
-            //   "https://openweathermap.org/img/wn/${model.weather?[0].icon}@2x.png",
-            //   width: widget.width / 2,
-            //   height: widget.width / 3,
-            //   fit: BoxFit.fitWidth,
-            // ),
+            Image.network(
+              "https://openweathermap.org/img/wn/${response?.weather?[0].icon}@2x.png",
+              width: MediaQuery.of(context).size.width / 2,
+              height: MediaQuery.of(context).size.width / 3,
+              fit: BoxFit.fitWidth,
+            ),
             SizedBox(
               width: 5,
             ),
-            Text("overcast clouds",
+            Text("${response?.weather?[0].description}",
                 style: TextStyle(
                     fontSize: width / 22,
                     fontWeight: FontWeight.bold,
@@ -150,7 +211,7 @@ class _WeatherScreenContainerState extends State<WeatherScreenContainer> {
     );
   }
 
-  Widget detailTemp() {
+  Widget detailTemp(WeatherResponse? response) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -162,7 +223,7 @@ class _WeatherScreenContainerState extends State<WeatherScreenContainer> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Image.asset("assets/icon/ic_humidity.png"),
-                  Text("91",
+                  Text("${response?.main?.humidity}",
                       style: TextStyle(
                           fontSize: width / 20,
                           fontWeight: FontWeight.bold,
@@ -184,7 +245,7 @@ class _WeatherScreenContainerState extends State<WeatherScreenContainer> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Image.asset("assets/icon/ic_wind.png"),
-                  Text("2.93",
+                  Text("${response?.wind?.speed}",
                       style: TextStyle(
                           fontSize: width / 20,
                           fontWeight: FontWeight.bold,
@@ -206,7 +267,7 @@ class _WeatherScreenContainerState extends State<WeatherScreenContainer> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Image.asset("assets/icon/ic_air_pressure.png"),
-                  Text("1009",
+                  Text("${response?.main?.pressure}",
                       style: TextStyle(
                           fontSize: width / 20,
                           fontWeight: FontWeight.bold,
